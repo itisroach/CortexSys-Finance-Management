@@ -9,7 +9,7 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = Transaction
-        fields = ["id", "title", "amount","type", "date", "notes"]
+        fields = ["id", "title", "amount", "type", "date", "notes", "created_at", "updated_at"]
 
 
     def create(self, validated_data):
