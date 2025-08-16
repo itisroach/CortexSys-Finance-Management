@@ -41,3 +41,9 @@ class Account(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.phone_number
+    
+    def balance(self):
+        income = self.transaction_set.filter(type="income").aggregate(total=models.Sum("amount"))["total"] or 0
+        expense = self.transaction_set.filter(type="expense").aggregate(total=models.Sum("amount"))["total"] or 0
+
+        return income - expense, income, expense
