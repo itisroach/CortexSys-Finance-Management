@@ -13,4 +13,6 @@ class TransactionsView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        queryset = queryset.filter(user_id=self.request.user.id)
+        queryset = Transaction.objects.filter(user_id=self.request.user.id)
+
+        return queryset
