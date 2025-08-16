@@ -56,6 +56,27 @@ def test_create_budget_fail():
 
 
 @pytest.mark.django_db
+def test_create_budget_end_date_earlier_than_start_date():
+    _, token = get_user_and_token()
+
+    data = {
+        "title": "sdasa",
+        "total_amount": 334,
+        "start_date": "2034-3-2",
+        "end_date": "2024-1-1",
+    }
+
+    client = APIClient()
+
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+
+    response = client.post(reverse("budgets-list"), data, format="json")
+
+
+    assert response.status_code == 400
+    assert "earlier" in str(response.data)
+
+@pytest.mark.django_db
 def test_budget_exceeded():
     _, token = get_user_and_token()
 
