@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Transaction
+from rest_framework.exceptions import PermissionDenied
 
 
 class TransactionSerializer(serializers.ModelSerializer):
@@ -22,4 +23,38 @@ class TransactionSerializer(serializers.ModelSerializer):
 
         transaction = Transaction.objects.create(**validated_data)
         return transaction
+    
+
+    def validate(self, data):
+
+        request = self.context["request"]
+        view = self.context.get("view")
+        user = request.user
+
+        id = view.kwargs.get("pk")
+
+        if id:
+            transaction = Transaction.objects.get(id=id)
+            
+            if not data.get("type"):
+                data["type"] = transaction.type
+
+            data["amount"] = transaction.amount
+            data["date"] = transaction.date
+
+
+        if data["type"] == "expense":
+            budgets = user.budget_set.filter(
+                start_date__lte=data['date'],
+                end_date__gte=data['date']
+            )
+            for budget in budgets:  
+                
+                message = budget.check_limit(data["amount"])
+
+                if message:
+                    raise PermissionDenied(message)
+
+        return data
+    
     
