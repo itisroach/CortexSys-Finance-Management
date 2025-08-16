@@ -4,6 +4,7 @@ from django.urls import reverse
 from transactions.models import Transaction
 from accounts.models import Account
 from rest_framework_simplejwt.tokens import RefreshToken
+from budgets.models import Budget
 
 def get_user_and_token():
     user = Account.objects.create_user(phone_number="09140329711", password="something")
@@ -212,7 +213,48 @@ def test_update_transaction_success():
     assert data["title"] in str(response.data)
 
 
-    response = client.patch(reverse("transactions-detail", args=[instance.pk]), {"title": "test"})
+    response = client.patch(reverse("transactions-detail", args=[instance.pk]), {"title": "test2"})
 
     assert response.status_code == 200
-    assert "test" in str(response.data)
+    assert "test2" in str(response.data)
+
+
+@pytest.mark.django_db
+def test_update_transaction_fail():
+    
+    user, token = get_user_and_token()
+
+    budget_data = {
+        "title": "test",
+        "total_amount": 200,
+        "start_date": "2024-12-20",
+        "end_date": "2024-12-28",
+        "user_id": user
+    }
+
+    Budget.objects.create(**budget_data)
+
+    data = {
+        "title": "test",
+        "amount": 1000000,
+        "type": "income",
+        "date": "2024-12-20",
+        "notes": "",
+        "user_id": user
+    }
+    
+
+    instance = Transaction.objects.create(**data)
+
+    del data["user_id"]
+
+    client = APIClient()
+
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+
+    response = client.patch(reverse("transactions-detail", args=[instance.pk]), {"type": "expense"})
+
+    print(str(response.data))
+    assert response.status_code == 403
+
+    assert "exceeded" in str(response.data)
