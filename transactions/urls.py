@@ -4,6 +4,6 @@ from . import views
 
 
 router = DefaultRouter()
-router.register("", views.TransactionsView, basename='transactions')
+router.register(r"transactions", views.TransactionsView, basename='transactions')
 
 urlpatterns = router.urls
