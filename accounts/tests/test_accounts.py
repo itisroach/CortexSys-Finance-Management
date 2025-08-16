@@ -57,7 +57,7 @@ def test_login_account_success(client: APIClient):
     response = client.post(reverse("login-user"), data, format="json")
 
     assert response.status_code == 200
-    assert "token" in str(response.data)
+    assert "access" in str(response.data)
 
 
 @pytest.mark.django_db
@@ -91,6 +91,6 @@ def test_login_account_failed(client: APIClient):
 
     response = client.post(reverse('login-user'), data, format="json")
 
-    assert response.status_code == 400
-    assert "wrong" in str(response.data)
+    assert response.status_code == 401
+    assert "found" in str(response.data)
 
