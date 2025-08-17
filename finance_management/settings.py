@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "accounts",
     "budgets",
     "transactions",
+    "phonenumber_field",
 ]
 
 MIDDLEWARE = [
