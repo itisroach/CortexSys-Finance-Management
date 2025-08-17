@@ -10,8 +10,16 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = Transaction
-        fields = ["id", "title", "amount", "type", "date", "notes", "created_at", "updated_at"]
-
+        fields = [
+            "id",
+            "title",
+            "amount",
+            "type",
+            "date",
+            "notes",
+            "created_at",
+            "updated_at",
+        ]
 
     def create(self, validated_data):
 
@@ -23,7 +31,6 @@ class TransactionSerializer(serializers.ModelSerializer):
 
         transaction = Transaction.objects.create(**validated_data)
         return transaction
-    
 
     def validate(self, data):
 
@@ -35,26 +42,22 @@ class TransactionSerializer(serializers.ModelSerializer):
 
         if id:
             transaction = Transaction.objects.get(id=id)
-            
+
             if not data.get("type"):
                 data["type"] = transaction.type
 
             data["amount"] = transaction.amount
             data["date"] = transaction.date
 
-
         if data["type"] == "expense":
             budgets = user.budget_set.filter(
-                start_date__lte=data['date'],
-                end_date__gte=data['date']
+                start_date__lte=data["date"], end_date__gte=data["date"]
             )
-            for budget in budgets:  
-                
+            for budget in budgets:
+
                 message = budget.check_limit(data["amount"])
 
                 if message:
                     raise PermissionDenied(message)
 
         return data
-    
-    

@@ -12,7 +12,6 @@ class BudgetSerializer(serializers.ModelSerializer):
         model = Budget
         fields = ["id", "title", "total_amount", "start_date", "end_date"]
 
-
     def create(self, validated_data):
 
         request = self.context.get("request")
@@ -23,10 +22,10 @@ class BudgetSerializer(serializers.ModelSerializer):
 
         budget = Budget.objects.create(**validated_data)
         return budget
-    
+
     def validate(self, data):
-        start_date = data.get('start_date')
-        end_date = data.get('end_date')
+        start_date = data.get("start_date")
+        end_date = data.get("end_date")
 
         if start_date and end_date and end_date < start_date:
             raise serializers.ValidationError(

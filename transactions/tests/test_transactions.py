@@ -6,12 +6,14 @@ from accounts.models import Account
 from rest_framework_simplejwt.tokens import RefreshToken
 from budgets.models import Budget
 
+
 def get_user_and_token():
     user = Account.objects.create_user(phone_number="09140329711", password="something")
 
     accessToken = str(RefreshToken.for_user(user).access_token)
 
     return user, accessToken
+
 
 @pytest.mark.django_db
 def test_create_transactions_success():
@@ -24,7 +26,7 @@ def test_create_transactions_success():
         "type": "income",
         "date": "2024-12-20",
         "notes": "",
-        "user_id": user.pk
+        "user_id": user.pk,
     }
 
     client = APIClient()
@@ -32,7 +34,6 @@ def test_create_transactions_success():
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {accessToken}")
 
     response = client.post(reverse("transactions-list"), data, format="json")
-
 
     assert response.status_code == 201
     assert data["title"] in str(response.data)
@@ -51,7 +52,7 @@ def test_transactions_not_authorized(client: APIClient):
     response = client.post(reverse("transactions-list"), data, format="json")
 
     assert response.status_code == 401
-    
+
 
 @pytest.mark.django_db
 def test_create_transactions_fail():
@@ -79,13 +80,13 @@ def test_create_transactions_fail():
     assert "date" in str(response.data)
 
 
-
 @pytest.mark.django_db
 def test_get_transactions_not_authorized(client: APIClient):
 
     response = client.get(reverse("transactions-list"))
 
     assert response.status_code == 401
+
 
 @pytest.mark.django_db
 def test_get_transactions():
@@ -98,11 +99,10 @@ def test_get_transactions():
         "type": "income",
         "date": "2024-12-20",
         "notes": "",
-        "user_id": user
+        "user_id": user,
     }
 
     Transaction.objects.create(**data)
-
 
     client = APIClient()
 
@@ -118,7 +118,9 @@ def test_delete_transaction_fail():
 
     _, token = get_user_and_token()
 
-    secondUser = Account.objects.create_user(phone_number="09140329712", password="something")
+    secondUser = Account.objects.create_user(
+        phone_number="09140329712", password="something"
+    )
 
     data = {
         "title": "test",
@@ -126,7 +128,7 @@ def test_delete_transaction_fail():
         "type": "income",
         "date": "2024-12-20",
         "notes": "",
-        "user_id": secondUser
+        "user_id": secondUser,
     }
 
     instance = Transaction.objects.create(**data)
@@ -140,12 +142,14 @@ def test_delete_transaction_fail():
     assert response.status_code == 404
     assert "not" in str(response.data)
 
+
 @pytest.mark.django_db
 def test_delete_transaction_not_authorized(client: APIClient):
 
     response = client.delete(reverse("transactions-detail", args=[1]))
 
     assert response.status_code == 401
+
 
 @pytest.mark.django_db
 def test_delete_transaction_success():
@@ -158,7 +162,7 @@ def test_delete_transaction_success():
         "type": "income",
         "date": "2024-12-20",
         "notes": "",
-        "user_id": user
+        "user_id": user,
     }
 
     instance = Transaction.objects.create(**data)
@@ -170,7 +174,6 @@ def test_delete_transaction_success():
     response = client.delete(reverse("transactions-detail", args=[instance.pk]))
 
     assert response.status_code == 204
-
 
 
 @pytest.mark.django_db
@@ -186,7 +189,7 @@ def test_update_transaction_not_authorized(client: APIClient):
 
 @pytest.mark.django_db
 def test_update_transaction_success():
-    
+
     user, token = get_user_and_token()
 
     data = {
@@ -195,9 +198,8 @@ def test_update_transaction_success():
         "type": "income",
         "date": "2024-12-20",
         "notes": "",
-        "user_id": user
+        "user_id": user,
     }
-    
 
     instance = Transaction.objects.create(**data)
 
@@ -207,13 +209,16 @@ def test_update_transaction_success():
 
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
-    response = client.put(reverse("transactions-detail", args=[instance.pk]), data, format="json")
+    response = client.put(
+        reverse("transactions-detail", args=[instance.pk]), data, format="json"
+    )
 
     assert response.status_code == 200
     assert data["title"] in str(response.data)
 
-
-    response = client.patch(reverse("transactions-detail", args=[instance.pk]), {"title": "test2"})
+    response = client.patch(
+        reverse("transactions-detail", args=[instance.pk]), {"title": "test2"}
+    )
 
     assert response.status_code == 200
     assert "test2" in str(response.data)
@@ -221,7 +226,7 @@ def test_update_transaction_success():
 
 @pytest.mark.django_db
 def test_update_transaction_fail():
-    
+
     user, token = get_user_and_token()
 
     budget_data = {
@@ -229,7 +234,7 @@ def test_update_transaction_fail():
         "total_amount": 200,
         "start_date": "2024-12-20",
         "end_date": "2024-12-28",
-        "user_id": user
+        "user_id": user,
     }
 
     Budget.objects.create(**budget_data)
@@ -240,9 +245,8 @@ def test_update_transaction_fail():
         "type": "income",
         "date": "2024-12-20",
         "notes": "",
-        "user_id": user
+        "user_id": user,
     }
-    
 
     instance = Transaction.objects.create(**data)
 
@@ -252,7 +256,9 @@ def test_update_transaction_fail():
 
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
-    response = client.patch(reverse("transactions-detail", args=[instance.pk]), {"type": "expense"})
+    response = client.patch(
+        reverse("transactions-detail", args=[instance.pk]), {"type": "expense"}
+    )
 
     print(str(response.data))
     assert response.status_code == 403

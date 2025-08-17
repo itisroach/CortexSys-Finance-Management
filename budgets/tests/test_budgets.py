@@ -1,6 +1,6 @@
 import pytest
 from rest_framework.test import APIClient
-from transactions.tests.test_transactions import get_user_and_token 
+from transactions.tests.test_transactions import get_user_and_token
 from django.urls import reverse
 from budgets.models import Budget
 from accounts.models import Account
@@ -24,10 +24,8 @@ def test_create_budget_success():
 
     response = client.post(reverse("budgets-list"), data, format="json")
 
-
     assert response.status_code == 201
     assert data["title"] in str(response.data)
-
 
 
 @pytest.mark.django_db
@@ -46,7 +44,6 @@ def test_create_budget_fail():
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
     response = client.post(reverse("budgets-list"), data, format="json")
-
 
     assert response.status_code == 400
     assert "title" in str(response.data)
@@ -72,9 +69,9 @@ def test_create_budget_end_date_earlier_than_start_date():
 
     response = client.post(reverse("budgets-list"), data, format="json")
 
-
     assert response.status_code == 400
     assert "earlier" in str(response.data)
+
 
 @pytest.mark.django_db
 def test_budget_exceeded():
@@ -97,11 +94,11 @@ def test_budget_exceeded():
         "title": "test trans",
         "amount": 200,
         "date": "2024-7-2",
-        "type": "expense"
+        "type": "expense",
     }
 
     response = client.post(reverse("transactions-list"), trans_data)
-    
+
     assert response.status_code == 403
     assert "exceeded" in str(response.data)
 
@@ -114,7 +111,6 @@ def test_create_budget_not_authorized(client: APIClient):
     assert response.status_code == 401
 
 
-
 @pytest.mark.django_db
 def test_get_budget():
 
@@ -125,7 +121,7 @@ def test_get_budget():
         "total_amount": 10000,
         "start_date": "2024-2-4",
         "end_date": "2024-3-4",
-        "user_id": user
+        "user_id": user,
     }
 
     Budget.objects.create(**data)
@@ -136,9 +132,9 @@ def test_get_budget():
 
     response = client.get(reverse("budgets-list"), format="json")
 
-
     assert response.status_code == 200
     assert data["title"] in str(response.data)
+
 
 @pytest.mark.django_db
 def test_get_budget_not_authorized(client: APIClient):
@@ -158,7 +154,7 @@ def test_delete_budget_success():
         "total_amount": 10000,
         "start_date": "2024-2-4",
         "end_date": "2024-3-4",
-        "user_id": user
+        "user_id": user,
     }
 
     instance = Budget.objects.create(**data)
@@ -167,8 +163,9 @@ def test_delete_budget_success():
 
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
-    response = client.delete(reverse("budgets-detail", args=[instance.pk]), format="json")
-
+    response = client.delete(
+        reverse("budgets-detail", args=[instance.pk]), format="json"
+    )
 
     assert response.status_code == 204
 
@@ -178,14 +175,16 @@ def test_delete_budget_fail():
 
     _, token = get_user_and_token()
 
-    secondUser = Account.objects.create_user(phone_number="09140329712", password="something")
+    secondUser = Account.objects.create_user(
+        phone_number="09140329712", password="something"
+    )
 
     data = {
         "title": "test",
         "total_amount": 1000000,
         "start_date": "2024-12-20",
         "end_date": "2024-12-22",
-        "user_id": secondUser
+        "user_id": secondUser,
     }
 
     instance = Budget.objects.create(**data)
@@ -207,6 +206,7 @@ def test_delete_budget_not_authorized(client: APIClient):
 
     assert response.status_code == 401
 
+
 @pytest.mark.django_db
 def test_delete_budget_success():
 
@@ -217,7 +217,7 @@ def test_delete_budget_success():
         "total_amount": 1000000,
         "start_date": "2024-12-20",
         "end_date": "2024-12-22",
-        "user_id": user
+        "user_id": user,
     }
 
     instance = Budget.objects.create(**data)
@@ -229,7 +229,6 @@ def test_delete_budget_success():
     response = client.delete(reverse("budgets-detail", args=[instance.pk]))
 
     assert response.status_code == 204
-
 
 
 @pytest.mark.django_db
@@ -245,7 +244,7 @@ def test_update_budget_not_authorized(client: APIClient):
 
 @pytest.mark.django_db
 def test_update_budget_success():
-    
+
     user, token = get_user_and_token()
 
     data = {
@@ -253,9 +252,8 @@ def test_update_budget_success():
         "total_amount": 1000000,
         "start_date": "2024-12-20",
         "end_date": "2024-12-22",
-        "user_id": user
+        "user_id": user,
     }
-    
 
     instance = Budget.objects.create(**data)
 
@@ -265,13 +263,16 @@ def test_update_budget_success():
 
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
-    response = client.put(reverse("budgets-detail", args=[instance.pk]), data, format="json")
+    response = client.put(
+        reverse("budgets-detail", args=[instance.pk]), data, format="json"
+    )
 
     assert response.status_code == 200
     assert data["title"] in str(response.data)
 
-
-    response = client.patch(reverse("budgets-detail", args=[instance.pk]), {"title": "test"})
+    response = client.patch(
+        reverse("budgets-detail", args=[instance.pk]), {"title": "test"}
+    )
 
     assert response.status_code == 200
     assert "test" in str(response.data)

@@ -5,13 +5,13 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Budget
 
 
-
 class BudgetViewset(ModelViewSet):
 
     serializer_class = BudgetSerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [
+        IsAuthenticated,
+    ]
     queryset = Budget.objects.all()
-
 
     def get_queryset(self):
         queryset = super().get_queryset()
