@@ -55,8 +55,8 @@ The **Finance Management API** is built using Django REST Framework and PostgreS
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/itisroach/CoretxSys_Finance_Management.git
-cd CoretxSys_Finance_Management
+git clone https://github.com/itisroach/CortexSys-Finance-Management.git
+cd CoretxSys-Finance-Management
 ```
 
 2. Create a virtual environment and activate it:
