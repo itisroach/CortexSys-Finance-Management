@@ -48,6 +48,11 @@ jobs:
             sleep 2
           done
 
+      - name: Run migrations
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+        run: python manage.py migrate --noinput
+
       - name: Run Black (check code style)
         run: black --check .
 
