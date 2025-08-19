@@ -26,7 +26,6 @@ jobs:
           --health-retries 5
 
     env:
-      # Django needs these to connect to the test database
       DB_NAME: finance
       DB_USER: postgres
       DB_PASSWORD: amirali3362
