@@ -24,7 +24,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -39,7 +38,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest black
-
     - name: Run Black (check code style)
       run: black --check .
 
