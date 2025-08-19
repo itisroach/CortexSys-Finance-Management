@@ -1,6 +1,7 @@
 from django.db import models
 from accounts.models import Account
 from django.core.validators import MinValueValidator
+from finance_management.firebase import send_notification
 
 
 class Budget(models.Model):
@@ -32,7 +33,19 @@ class Budget(models.Model):
     def check_limit(self, added_amount):
         spent = self.spent_amount() + added_amount
         if spent > self.total_amount:
-            return f"Budget '{self.title}' exceeded! Limit: {self.total_amount}, Spent: {spent}"
+            notif = f"Budget '{self.title}' exceeded! Limit: {self.total_amount}, Spent: {spent}"
+
+            for device in self.user_id.device_tokens.all():
+                try:
+                    send_notification(
+                        token=device.token,
+                        title="Budget Exceeded 🚨",
+                        body=notif,
+                        data={"budget_id": self.user_id},
+                    )
+                    return True
+                except Exception as e:
+                    return False
 
     def __str__(self):
         return self.title
