@@ -75,7 +75,7 @@ venv\Scripts\activate     # Windows
 pip install -r requirements.txt
 ```
 
-4. Create a project in firebase and save json file which contains project credentials and save it project folder and add its path to an .env file.
+4. Create a project in firebase and save json file in projec folder, which contains project credentials and add its path to an .env file.
 
 5. Apply migrations:
 
