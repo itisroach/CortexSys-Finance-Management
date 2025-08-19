@@ -68,7 +68,7 @@ WSGI_APPLICATION = "finance_management.wsgi.application"
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if not DATABASE_URL:
-    raise RuntimeError("DATABASE_URL environment variable is not set!")
+    raise RuntimeError("DATABASE_URL environment variable is not set")
 
 if DATABASE_URL:
     DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
