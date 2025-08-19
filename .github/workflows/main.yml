@@ -12,59 +12,36 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:17
         env:
+          POSTGRES_DB: finance_management_db
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: amirali3362
-          POSTGRES_DB: finance
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U postgres"
+          --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
-    env:
-      DATABASE_URL: postgres://postgres:amirali3362@postgres:5432/finance
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
 
-      - name: Cache pip dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest black
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest black psycopg2-binary dj-database-url
+    - name: Run Black (check code style)
+      run: black --check .
 
-      - name: Wait for PostgreSQL
-        run: |
-          echo "Waiting for PostgreSQL to be ready..."
-          until pg_isready -h postgres -p 5432 -U postgres; do
-            sleep 2
-          done
-
-      - name: Run migrations
-        env:
-          DATABASE_URL: postgres://postgres:amirali3362@postgres:5432/finance
-        run: python manage.py migrate --noinput
-
-      - name: Run Black (check code style)
-        run: black --check .
-
-      - name: Run tests with pytest
-        env:
-          DATABASE_URL: postgres://postgres:amirali3362@postgres:5432/finance
-        run: pytest --reuse-db
+    - name: Run tests with pytest
+      run: pytest
