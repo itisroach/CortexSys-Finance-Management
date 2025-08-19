@@ -1,8 +1,13 @@
 import firebase_admin
 from firebase_admin import credentials, messaging
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
-cred = credentials.Certificate("finance-management.json")
+FIREBASE_CONFIG_PATH = os.getenv("FIREBASE_PATH")
+
+cred = credentials.Certificate(FIREBASE_CONFIG_PATH)
 firebase_admin.initialize_app(cred)
 
 
