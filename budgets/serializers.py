@@ -23,7 +23,7 @@ class BudgetSerializer(serializers.ModelSerializer):
         budget = Budget.objects.create(**validated_data)
         return budget
 
-    # validating end date is not earlier than start date 
+    # validating end date is not earlier than start date
     def validate(self, data):
         start_date = data.get("start_date")
         end_date = data.get("end_date")

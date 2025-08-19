@@ -23,7 +23,7 @@ class Budget(models.Model):
     end_date = models.DateField(null=False, blank=False)
 
     def spent_amount(self):
-        # getting all expense transactions in date range of budget 
+        # getting all expense transactions in date range of budget
         return (
             self.user_id.transaction_set.filter(
                 type="expense", date__range=(self.start_date, self.end_date)

@@ -32,8 +32,8 @@ class TransactionSerializer(serializers.ModelSerializer):
         transaction = Transaction.objects.create(**validated_data)
         return transaction
 
-    def validate(self, data):   
-        
+    def validate(self, data):
+
         # getting additional infos
         request = self.context["request"]
         view = self.context.get("view")
@@ -52,7 +52,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             data["amount"] = transaction.amount
             data["date"] = transaction.date
 
-        # if transaction type is a expense it will get budgets in that date range to check if limit is hit or not 
+        # if transaction type is a expense it will get budgets in that date range to check if limit is hit or not
         if data["type"] == "expense":
             budgets = user.budget_set.filter(
                 start_date__lte=data["date"], end_date__gte=data["date"]

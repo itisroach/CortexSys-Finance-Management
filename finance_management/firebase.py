@@ -8,7 +8,7 @@ load_dotenv()
 FIREBASE_CONFIG_PATH = os.getenv("FIREBASE_PATH")
 
 if not FIREBASE_CONFIG_PATH is None:
-    
+
     cred = credentials.Certificate(FIREBASE_CONFIG_PATH)
     firebase_admin.initialize_app(cred)
 
