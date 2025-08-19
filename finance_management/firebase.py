@@ -7,8 +7,10 @@ load_dotenv()
 
 FIREBASE_CONFIG_PATH = os.getenv("FIREBASE_PATH")
 
-cred = credentials.Certificate(FIREBASE_CONFIG_PATH)
-firebase_admin.initialize_app(cred)
+if not FIREBASE_CONFIG_PATH is None:
+    
+    cred = credentials.Certificate(FIREBASE_CONFIG_PATH)
+    firebase_admin.initialize_app(cred)
 
 
 def send_notification(token, title, body, data=None):
