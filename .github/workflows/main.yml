@@ -23,9 +23,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    env:
-      DATABASE_URL: postgres://postgres:amirali3362@postgres:5432/finance
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,7 +47,7 @@ jobs:
 
       - name: Run migrations
         env:
-          DATABASE_URL: ${{ env.DATABASE_URL }}
+          DATABASE_URL: postgres://postgres:amirali3362@postgres:5432/finance
         run: python manage.py migrate --noinput
 
       - name: Run Black (check code style)
@@ -58,5 +55,5 @@ jobs:
 
       - name: Run tests with pytest
         env:
-          DATABASE_URL: ${{ env.DATABASE_URL }}
+          DATABASE_URL: postgres://postgres:amirali3362@postgres:5432/finance
         run: pytest
