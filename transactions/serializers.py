@@ -57,7 +57,17 @@ class TransactionSerializer(serializers.ModelSerializer):
 
                 message = budget.check_limit(data["amount"])
 
-                if message:
-                    raise PermissionDenied(message)
+                if not message:
+                    self.context["notif_not_sent"] = True
 
         return data
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+
+        message_sent = self.context.get("notif_not_sent")
+
+        if message_sent:
+            rep.update({"warning": "failed to send notification, budget exceeded!"})
+
+        return rep
