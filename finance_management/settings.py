@@ -1,4 +1,7 @@
 from pathlib import Path
+import dj_database_url
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -62,16 +65,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "finance_management.wsgi.application"
 
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "finance",
-        "USER": "postgres",
-        "PASSWORD": "amirali3362",
-        "HOST": "postgres",
-        "PORT": "5432",
-    }
-}
+DATABASES = {"default": dj_database_url.config(default=os.environ.get("DATABASE_URL"))}
 
 
 # Password validation
