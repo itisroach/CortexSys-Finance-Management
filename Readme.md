@@ -47,7 +47,7 @@ The **Finance Management API** is built using Django REST Framework and PostgreS
 * **Database**: PostgreSQL
 * **Authentication**: JWT (JSON Web Token)
 * **Testing**: pytest
-* **Notification**: Firebase
+* **Notification**: Firebase Message Service
 * **Admin Panel**: Django Admin
 
 ---
