@@ -73,7 +73,7 @@ if not DATABASE_URL:
 if DATABASE_URL:
     DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
 else:
-    # fallback for local development
+    # fallback for local usage
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
