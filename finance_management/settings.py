@@ -65,7 +65,7 @@ WSGI_APPLICATION = "finance_management.wsgi.application"
 
 DATABASES = {
     "default": dj_database_url.config(
-        default="postgres://postgres:amirali3362@postgres:5432/finance"
+        default="postgres://postgres:amirali3362@127.0.0.1:5432/finance"
     )
 }
 
