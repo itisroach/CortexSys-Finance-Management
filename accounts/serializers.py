@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Account
+from .models import Account, DeviceToken
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -15,3 +15,9 @@ class AccountSerializer(serializers.ModelSerializer):
             password=validated_data["password"],
         )
         return user
+
+
+class DeviceTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeviceToken
+        fields = ["id", "token"]

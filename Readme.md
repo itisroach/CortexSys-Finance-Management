@@ -36,6 +36,7 @@ The **Finance Management API** is built using Django REST Framework and PostgreS
 * **Categories**: Assign categories to transactions.
 * **Budgets**: Set budgets with start and end dates; receive a message when exceeded.
 * **Reports**: Get a summary of income, expenses, and account balance.
+* **Notifications**: Receive in-app notifications when budgets are exceeded.
 * **User Authentication**: Register, login, and secure access using JWT.
 
 ---
@@ -46,6 +47,7 @@ The **Finance Management API** is built using Django REST Framework and PostgreS
 * **Database**: PostgreSQL
 * **Authentication**: JWT (JSON Web Token)
 * **Testing**: pytest
+* **Notification**: Firebase
 * **Admin Panel**: Django Admin
 
 ---
@@ -73,19 +75,20 @@ venv\Scripts\activate     # Windows
 pip install -r requirements.txt
 ```
 
-4. Apply migrations:
+4. Create a project in firebase and save json file which contains project credentials and save it project folder and add its path to an .env file.
+
+5. Apply migrations:
 
 ```bash
 python manage.py migrate
 ```
-
-5. Create a superuser (optional for admin panel):
+6. Create a superuser (optional for admin panel):
 
 ```bash
 python manage.py createsuperuser
 ```
 
-6. Run the development server:
+7. Run the development server:
 
 ```bash
 python manage.py runserver
@@ -98,6 +101,7 @@ python manage.py runserver
 * Register a new user via `/api/auth/register/`.
 * Login to obtain JWT token via `/api/auth/login/`.
 * Use the token to authenticate API requests.
+* Use `/api/device-tokens/` to create a device token which receives notifications. 
 * Create transactions, budgets, and view or edit or delete them.
 
 ---
@@ -114,6 +118,8 @@ python manage.py runserver
 | GET/POST            | `/api/budgets/`             | Get or create for budgets           |
 | PUT/PATCH/DELETE    | `/api/budgets/{id}/`        | Update or delete for budgets           |
 | GET                 | `/api/transactions/report/` | Get income/expense summary |
+| GET/POST            | `/api/device-tokens/`             | Get or create for device tokens           |
+| PUT/PATCH/DELETE    | `/api/device-tokens/{id}/`   | Update or delete for device tokens      |
 
 ---
 
@@ -160,12 +166,28 @@ curl -X GET http://127.0.0.1:8000/api/transactions/report/ \
 -H "Authorization: Bearer <your_jwt_token>"
 ```
 
+### Get Device Token
+
+```bash
+curl -X GET http://127.0.0.1:8000/api/device-tokens/ \
+-H "Authorization: Bearer <your_jwt_token>"
+```
+
+### Create Device Token
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/transactions/report/ \
+-H "Authorization: Bearer <your_jwt_token>"
+-d '{"token": "for_firebase_device_token"}'
+```
+
 ## Project Structure
 
 ```
 finance_management/
 ├── accounts/        # User authentication
 ├── transactions/    # Income and expense management
+├── finance_management/ # Project settings
 ├── budgets/         # Budget management
 ├── manage.py
 ├── requirements.txt
@@ -190,3 +212,6 @@ finance_management/
 * Fields: `title`, `total_amount`, `start_date`, `end_date`, `user_id`.
 * Validates that `end_date` ≥ `start_date`.
 
+### Device Token
+
+* Fields: `id`, `user`, `token`.

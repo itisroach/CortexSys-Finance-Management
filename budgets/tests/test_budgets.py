@@ -74,36 +74,6 @@ def test_create_budget_end_date_earlier_than_start_date():
 
 
 @pytest.mark.django_db
-def test_budget_exceeded():
-    _, token = get_user_and_token()
-
-    data = {
-        "title": "test title",
-        "total_amount": 100,
-        "start_date": "2024-5-2",
-        "end_date": "2025-5-2",
-    }
-
-    client = APIClient()
-
-    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
-
-    client.post(reverse("budgets-list"), data, format="json")
-
-    trans_data = {
-        "title": "test trans",
-        "amount": 200,
-        "date": "2024-7-2",
-        "type": "expense",
-    }
-
-    response = client.post(reverse("transactions-list"), trans_data)
-
-    assert response.status_code == 403
-    assert "exceeded" in str(response.data)
-
-
-@pytest.mark.django_db
 def test_create_budget_not_authorized(client: APIClient):
 
     response = client.post(reverse("budgets-list"), {}, format="json")
