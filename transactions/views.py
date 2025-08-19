@@ -12,6 +12,7 @@ class TransactionsView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = Transaction.objects.all()
 
+    # getting a specific user tranasactions using their JWT token
     def get_queryset(self):
 
         query = self.request.query_params.get("type")
@@ -28,6 +29,7 @@ class TransactionsView(viewsets.ModelViewSet):
 
         return queryset
 
+    # creating new path /report to get a simple report
     @action(detail=False, methods=["get"])
     def report(self, request):
         user = request.user

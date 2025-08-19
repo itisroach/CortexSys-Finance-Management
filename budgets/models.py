@@ -23,6 +23,7 @@ class Budget(models.Model):
     end_date = models.DateField(null=False, blank=False)
 
     def spent_amount(self):
+        # getting all expense transactions in date range of budget 
         return (
             self.user_id.transaction_set.filter(
                 type="expense", date__range=(self.start_date, self.end_date)
@@ -31,6 +32,7 @@ class Budget(models.Model):
         )
 
     def check_limit(self, added_amount):
+        # getting the amount spent and adding the amount that is being spent
         spent = self.spent_amount() + added_amount
         if spent > self.total_amount:
             notif = f"Budget '{self.title}' exceeded! Limit: {self.total_amount}, Spent: {spent}"
