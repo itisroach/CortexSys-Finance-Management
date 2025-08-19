@@ -26,11 +26,7 @@ jobs:
           --health-retries 5
 
     env:
-      DB_NAME: finance
-      DB_USER: postgres
-      DB_PASSWORD: amirali3362
-      DB_HOST: localhost
-      DB_PORT: 5432
+      DATABASE_URL: postgres://postgres:amirali3362@postgres:5432/finance
 
     steps:
       - name: Checkout code
