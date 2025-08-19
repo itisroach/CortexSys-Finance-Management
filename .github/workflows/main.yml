@@ -26,7 +26,7 @@ jobs:
           --health-retries 5
 
     env:
-      DATABASE_URL: postgres://postgres:amirali3362@postgres:5432/finance
+      DATABASE_URL: postgres://postgres:amirali3362@127.0.0.1:5432/finance
 
     steps:
       - name: Checkout code
