@@ -49,6 +49,7 @@ The **Finance Management API** is built using Django REST Framework and PostgreS
 * **Testing**: pytest
 * **Notification**: Firebase Messaging Service
 * **Admin Panel**: Django Admin
+* **Documentation**: Swagger API documentation.
 
 ---
 
@@ -103,6 +104,7 @@ python manage.py runserver
 * Use the token to authenticate API requests.
 * Use `/api/device-tokens/` to create a device token which receives notifications. 
 * Create transactions, budgets, and view or edit or delete them.
+* See Swagger API documentation in `/api/documentation/`
 
 ---
 
@@ -120,6 +122,7 @@ python manage.py runserver
 | GET                 | `/api/transactions/report/` | Get income/expense summary |
 | GET/POST            | `/api/device-tokens/`             | Get or create for device tokens           |
 | PUT/PATCH/DELETE    | `/api/device-tokens/{id}/`   | Update or delete for device tokens      |
+| GET                 | `/api/documentation/`   | Swagger API documentation      |
 
 ---
 
