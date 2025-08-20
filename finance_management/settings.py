@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "budgets",
     "transactions",
     "phonenumber_field",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
