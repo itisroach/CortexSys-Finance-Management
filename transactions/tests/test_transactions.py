@@ -3,35 +3,14 @@ from rest_framework.test import APIClient
 from django.urls import reverse
 from transactions.models import Transaction
 from accounts.models import Account
-from rest_framework_simplejwt.tokens import RefreshToken
-from budgets.models import Budget
-
-
-def get_user_and_token():
-    user = Account.objects.create_user(phone_number="09140329711", password="something")
-
-    accessToken = str(RefreshToken.for_user(user).access_token)
-
-    return user, accessToken
-
+from utils.helper import get_authoized_client_and_user, get_transaction_data
 
 @pytest.mark.django_db
 def test_create_transactions_success():
 
-    user, accessToken = get_user_and_token()
+    _, client = get_authoized_client_and_user()
 
-    data = {
-        "title": "test",
-        "amount": 1000000,
-        "type": "income",
-        "date": "2024-12-20",
-        "notes": "",
-        "user_id": user.pk,
-    }
-
-    client = APIClient()
-
-    client.credentials(HTTP_AUTHORIZATION=f"Bearer {accessToken}")
+    data = get_transaction_data()
 
     response = client.post(reverse("transactions-list"), data, format="json")
 
@@ -41,13 +20,7 @@ def test_create_transactions_success():
 
 @pytest.mark.django_db
 def test_transactions_not_authorized(client: APIClient):
-    data = {
-        "title": "",
-        "amount": 0,
-        "type": "",
-        "date": "",
-        "notes": "",
-    }
+    data = get_transaction_data(True)
 
     response = client.post(reverse("transactions-list"), data, format="json")
 
@@ -57,19 +30,9 @@ def test_transactions_not_authorized(client: APIClient):
 @pytest.mark.django_db
 def test_create_transactions_fail():
 
-    user, accessToken = get_user_and_token()
+    _, client = get_authoized_client_and_user()
 
-    data = {
-        "title": "",
-        "amount": 0,
-        "type": "",
-        "date": "",
-        "notes": "",
-    }
-
-    client = APIClient()
-
-    client.credentials(HTTP_AUTHORIZATION=f"Bearer {accessToken}")
+    data = get_transaction_data(fail=True)
 
     response = client.post(reverse("transactions-list"), data, format="json")
 
@@ -91,22 +54,11 @@ def test_get_transactions_not_authorized(client: APIClient):
 @pytest.mark.django_db
 def test_get_transactions():
 
-    user, token = get_user_and_token()
+    user, client = get_authoized_client_and_user()
 
-    data = {
-        "title": "test",
-        "amount": 1000000,
-        "type": "income",
-        "date": "2024-12-20",
-        "notes": "",
-        "user_id": user,
-    }
+    data = get_transaction_data(user_id=user)
 
     Transaction.objects.create(**data)
-
-    client = APIClient()
-
-    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
     response = client.get(reverse("transactions-list"))
 
@@ -116,26 +68,15 @@ def test_get_transactions():
 @pytest.mark.django_db
 def test_delete_transaction_fail():
 
-    _, token = get_user_and_token()
+    _, client = get_authoized_client_and_user()
 
     secondUser = Account.objects.create_user(
         phone_number="09140329712", password="something"
     )
 
-    data = {
-        "title": "test",
-        "amount": 1000000,
-        "type": "income",
-        "date": "2024-12-20",
-        "notes": "",
-        "user_id": secondUser,
-    }
+    data = get_transaction_data(user_id=secondUser)
 
     instance = Transaction.objects.create(**data)
-
-    client = APIClient()
-
-    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
     response = client.delete(reverse("transactions-detail", args=[instance.pk]))
 
@@ -154,22 +95,11 @@ def test_delete_transaction_not_authorized(client: APIClient):
 @pytest.mark.django_db
 def test_delete_transaction_success():
 
-    user, token = get_user_and_token()
+    user, client = get_authoized_client_and_user()
 
-    data = {
-        "title": "test",
-        "amount": 1000000,
-        "type": "income",
-        "date": "2024-12-20",
-        "notes": "",
-        "user_id": user,
-    }
+    data = get_transaction_data(user_id=user)
 
     instance = Transaction.objects.create(**data)
-
-    client = APIClient()
-
-    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
     response = client.delete(reverse("transactions-detail", args=[instance.pk]))
 
@@ -190,24 +120,13 @@ def test_update_transaction_not_authorized(client: APIClient):
 @pytest.mark.django_db
 def test_update_transaction_success():
 
-    user, token = get_user_and_token()
+    user, client = get_authoized_client_and_user()
 
-    data = {
-        "title": "test",
-        "amount": 1000000,
-        "type": "income",
-        "date": "2024-12-20",
-        "notes": "",
-        "user_id": user,
-    }
+    data = get_transaction_data(user_id=user)
 
     instance = Transaction.objects.create(**data)
 
     del data["user_id"]
-
-    client = APIClient()
-
-    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
     response = client.put(
         reverse("transactions-detail", args=[instance.pk]), data, format="json"

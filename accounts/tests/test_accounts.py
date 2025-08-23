@@ -1,8 +1,8 @@
 import pytest
 from rest_framework.test import APIClient
 from django.urls import reverse
-from accounts.models import Account, DeviceToken
-from transactions.tests.test_transactions import get_user_and_token
+from accounts.models import Account
+from utils.helper  import get_authoized_client_and_user
 
 
 @pytest.mark.django_db
@@ -94,11 +94,7 @@ def test_login_account_failed(client: APIClient):
 @pytest.mark.django_db
 def test_device_token():
 
-    _, token = get_user_and_token()
-
-    client = APIClient()
-
-    client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+    _, client = get_authoized_client_and_user()
 
     data = {"token": "fake_tokens"}
 
