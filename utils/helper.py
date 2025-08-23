@@ -2,6 +2,7 @@ from accounts.models import Account
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.test import APIClient
 
+
 def get_authoized_client_and_user():
     user = Account.objects.create_user(phone_number="09140329711", password="something")
 
@@ -14,7 +15,7 @@ def get_authoized_client_and_user():
     return user, client
 
 
-def get_transaction_data(fail: bool = False, user_id = None):
+def get_transaction_data(fail: bool = False, user_id=None):
     if not fail:
         return {
             "title": "test",
@@ -22,7 +23,7 @@ def get_transaction_data(fail: bool = False, user_id = None):
             "type": "income",
             "date": "2024-12-20",
             "notes": "",
-            "user_id": user_id or None
+            "user_id": user_id or None,
         }
     else:
         return {
@@ -32,16 +33,16 @@ def get_transaction_data(fail: bool = False, user_id = None):
             "date": "",
             "notes": "",
         }
-    
 
-def get_budget_data(fail: bool = False, user_id = None):
+
+def get_budget_data(fail: bool = False, user_id=None):
     if not fail:
         return {
             "title": "test",
             "total_amount": 10000,
             "start_date": "2024-2-4",
             "end_date": "2024-3-4",
-            "user_id": user_id
+            "user_id": user_id,
         }
     else:
         return {

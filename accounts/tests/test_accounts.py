@@ -2,7 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 from django.urls import reverse
 from accounts.models import Account
-from utils.helper  import get_authoized_client_and_user
+from utils.helper import get_authoized_client_and_user
 
 
 @pytest.mark.django_db

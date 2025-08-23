@@ -5,6 +5,7 @@ from transactions.models import Transaction
 from accounts.models import Account
 from utils.helper import get_authoized_client_and_user, get_transaction_data
 
+
 @pytest.mark.django_db
 def test_create_transactions_success():
 
