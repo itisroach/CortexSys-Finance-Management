@@ -83,7 +83,17 @@ pip install -r requirements.txt
 ```bash
 python manage.py migrate
 ```
-6. Create a superuser (optional for admin panel):
+6. Create a .env file ans set:
+
+```bash
+FIREBASE_PATH="your_firebase_json_file"
+POSTGRES_DB="your_database_name"
+POSTGRES_HOST="your_database_host"
+POSTGRES_USER="your_database_username"
+POSTGRES_PASSWORD="your_database_password"
+POSTGRES_PORT="your_database_port"
+```
+7. Create a superuser (optional for admin panel):
 
 ```bash
 python manage.py createsuperuser
